@@ -14,6 +14,9 @@ const employeeSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    department:{
+        type: String
+    }
 },{timestamps:true});
 
 const employeeModel = mongoose.model('employee', employeeSchema);

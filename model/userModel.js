@@ -24,6 +24,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         enum:['admin','employee']
     },
+    employeeID: {
+        type: {type: mongoose.Types.ObjectId, ref: "employee"},
+    },
     token:{
         type: String
     }
