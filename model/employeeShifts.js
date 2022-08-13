@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const employeeShiftSchema = new mongoose.Schema({
     employeeID: {
         type: {type: mongoose.Types.ObjectId, ref: "employee"},
-        required: true,
     },
     shiftInfo:{
         shiftDate:{
@@ -11,11 +10,11 @@ const employeeShiftSchema = new mongoose.Schema({
             required: true,
         },
         startTime:{
-            type: Time,
+            type: Date,
             required: true,
         },
         endTime:{
-            type: Time,
+            type: Date,
             required: true,
         },
         status:{
