@@ -2,10 +2,12 @@ const express = require('express');
 const dotenv = require('dotenv');
 
 dotenv.config({path:'./config/config.env'}); 
+require('./config/conn');
 
 /** Import routes */
 const routes = require('./router');
 const app = express();
+
 
 
 app.use(express.json());
