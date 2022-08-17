@@ -28,9 +28,9 @@ const registerUser = async(req, res) => {
         });
 
         // Remove the password.
-        const { password, ...others } = savedUser._doc;
+        const { password, ...other_details } = savedUser._doc;
 
-        return res.cookie({ 'token': token }).json({ success: true,message: 'User registered successfully', data: others })
+        return res.status(201).json({ status: "OK",message: 'User registered successfully', data: other_details, 'token': token })
 
     } catch (error) {
         res.status(412).json(error);
