@@ -12,7 +12,7 @@ const registerUser = async(req, res) => {
         // Check if the user already exist or not.
         const userExist = await userModel.findOne({ email: req.body.email });
         if(userExist) {
-            return res.status(400).json("Requested user email already exist");
+            return res.status(412).json("Requested user email already exist");
         }
 
         // Hash the password and adding hashed password to request body.
@@ -33,7 +33,7 @@ const registerUser = async(req, res) => {
         return res.cookie({ 'token': token }).json({ success: true,message: 'User registered successfully', data: others })
 
     } catch (error) {
-        res.status(400).json(error);
+        res.status(412).json(error);
     }
 }
 
