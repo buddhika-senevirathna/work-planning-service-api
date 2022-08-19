@@ -1,16 +1,19 @@
 const express = require('express');
 const userRouter= express.Router();
 const Validator = require('../middleware/validator');
+const isAuthenticated = require('../middleware/auth');
 
-const { registerUser, getUser, updateUser, getAllUsers, deleteUser } = require('../controller/userContoller');
+const { registerUser, loginUser, getUser, updateUser, getAllUsers, deleteUser } = require('../controller/userContoller');
 
 userRouter.post('/register', Validator('register'),registerUser);
 
-userRouter.get('/:id', getUser);
+userRouter.post('/login', Validator('login'), loginUser);
+
+userRouter.get('/:id', isAuthenticated, getUser);
 
 userRouter.put('/:id', updateUser);
 
-userRouter.get('/all', getAllUsers);
+userRouter.get('/', isAuthenticated, getAllUsers);
 
 userRouter.delete('/:id', deleteUser);
 

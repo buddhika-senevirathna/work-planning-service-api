@@ -37,12 +37,79 @@ const registerUser = async(req, res) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+const loginUser = async(req, res) => {
+    try {
+        const  email = req.body.email;
+        // Get the user details.
+        const user = await userModel.findOne({ email: email });
+        if(!user) {
+            return res.status(400).json({status: "FAILED", message:'Please check the login credentials'});
+        }
+
+        // Check the password matches or not.
+        const isPasswordMatched = await bcrypt.compare(req.body.password, user.password);
+        if(!isPasswordMatched) {
+            return res.status(400).json({status: "FAILED", message:'Please check the login credentials'}); 
+        }
+
+        // Create the user token.
+        const token = await jwt.sign(
+            { user_id: user._id, email }, 
+            process.env.SECRET_KEY, 
+            {
+                expiresIn: process.env.JWT_EXPIRE,
+            }
+        );
+
+        // Remove the password from user details and return the user details.
+        const { password, ...other_details } = user._doc;
+
+        // Adding token to the user details.
+        other_details.token = token;
+
+        return res.status(201).json({ status: "OK",message: 'Logged in successfully', data: other_details })
+
+    } catch (error) {
+        return res.status(412).json({ status: "FAILED", message: error.message });
+    }
+}
+
 const getUser = async(req, res) => {
+    try {
+        // Check if the user exist or not by user id.
+        const userExist = await userModel.findById(req.params.id).select({ password: false });
+
+        if (!userExist) {
+            return res.status(412).json({ status: "FAILED", message: "User not found" }) 
+        }
+
+        return res.status(200).json({ status: "OK", data: userExist })
+
+    } catch (error) {
+        return res.status(412).json({ status: "FAILED", message: error.message });
+    }
     
 }
 
 const getAllUsers = async(req, res) => {
-    
+    try {
+        // Check if the user exist or not.
+        const users = await userModel.find().select({ password: false });
+
+        if (!users) {
+            return res.status(412).json({ status: "FAILED", message: "Cannot find users in the system" }); 
+        }
+
+        return res.status(200).json({ status: "OK", data: users })
+
+    } catch (error) {
+        return res.status(412).json({ status: "FAILED", message: error.message });
+    }
 }
 
 const updateUser = async(req, res) => {
@@ -52,4 +119,4 @@ const updateUser = async(req, res) => {
 const deleteUser = async(req, res) => {
     
 }
-module.exports = { registerUser, getUser, getAllUsers, updateUser, deleteUser };
+module.exports = { registerUser, loginUser, getUser, getAllUsers, updateUser, deleteUser };
