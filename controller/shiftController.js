@@ -52,8 +52,8 @@ const updateShift = async(req, res) => {
 
 const deleteShift = async(req, res) => {
     try {
-        await User.findByIdAndDelete(req.params.id);
-        res.status(200).json("User has been deleted."); 
+        await shiftModel.findByIdAndDelete(req.params.id);
+        res.status(200).json("Shift has been deleted successfully.");
     } catch (error) {
         return res.status(412).json({ status: "FAILED", message: error.message });
     }
