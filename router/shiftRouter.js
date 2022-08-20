@@ -5,7 +5,6 @@ const { isAuthenticated, isAuthenticatedAndAdmin } = require('../middleware/auth
 
 const { saveShift, getAllShifts, getShift, updateShift, deleteShift } = require('../controller/shiftController');
 
-// shiftRouter.post('/', Validator('newShift'),isAuthenticatedAndAdmin, saveShift);
 shiftRouter.post('/', isAuthenticatedAndAdmin, Validator('saveShiftValidation'), saveShift);
 
 shiftRouter.get('/', isAuthenticated, getAllShifts);
