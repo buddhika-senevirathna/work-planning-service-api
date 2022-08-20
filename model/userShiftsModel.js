@@ -9,6 +9,10 @@ const employeeShiftSchema = new mongoose.Schema({
             type: Date,
             required: true,
         },
+        shiftName:{
+            type: Date,
+            required: true,
+        },
         startTime:{
             type: Date,
             required: true,
@@ -17,8 +21,16 @@ const employeeShiftSchema = new mongoose.Schema({
             type: Date,
             required: true,
         },
+        duration:{
+            type: Number,
+            required: true,
+            min: 1,
+            max: 8
+        },
         status:{
-            type: String
+            type: String,
+            required: true,
+            enum:["pending","ongoing","completed"]
         }
     }
 },{timestamps:true});

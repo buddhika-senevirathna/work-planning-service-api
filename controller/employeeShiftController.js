@@ -1,4 +1,4 @@
-const employeeShifts = require("../model/employeeShifts");
+const employeeShifts = require("../model/userShiftsModel");
 
 /**
  * 

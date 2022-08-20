@@ -1,7 +1,7 @@
 const express = require('express');
 const userRouter= express.Router();
 const Validator = require('../middleware/validator');
-const isAuthenticated = require('../middleware/auth');
+const { isAuthenticated, isAuthenticatedAndAdmin } = require('../middleware/auth');
 
 const { registerUser, loginUser, getUser, updateUser, getAllUsers, deleteUser } = require('../controller/userContoller');
 
@@ -13,7 +13,7 @@ userRouter.get('/:id', isAuthenticated, getUser);
 
 userRouter.put('/:id', updateUser);
 
-userRouter.get('/', isAuthenticated, getAllUsers);
+userRouter.get('/', isAuthenticatedAndAdmin, getAllUsers);
 
 userRouter.delete('/:id', deleteUser);
 

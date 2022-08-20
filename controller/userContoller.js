@@ -23,17 +23,22 @@ const registerUser = async(req, res) => {
         const newUser = new userModel(req.body);
         const savedUser = await newUser.save();
 
-        const token = await jwt.sign({ id: savedUser._id }, process.env.SECRET_KEY, {
-            expiresIn: process.env.JWT_EXPIRE,
-        });
+        // Create the user token.
+        const token = await jwt.sign(
+            { user_id: savedUser._id, email: savedUser.email },
+            process.env.SECRET_KEY,
+            {
+                expiresIn: process.env.JWT_EXPIRE,
+            }
+        );
 
         // Remove the password.
         const { password, ...other_details } = savedUser._doc;
 
-        return res.status(201).json({ status: "OK",message: 'User registered successfully', data: other_details, 'token': token })
+        return res.status(200).json({ status: "OK", message: 'User registered successfully', data: other_details, token: token })
 
     } catch (error) {
-        res.status(412).json(error);
+        return res.status(412).json({ status: "FAILED", message: error.message });
     }
 }
 
@@ -113,10 +118,33 @@ const getAllUsers = async(req, res) => {
 }
 
 const updateUser = async(req, res) => {
-    
+    try {
+        // Hash the password and adding hashed password to request body.
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(req.body.password, salt);
+        req.body.password = hashPassword;
+
+        const newUser = new userModel(req.body);
+        const savedUser = await newUser.save();
+
+        // Remove the password.
+        const { password, ...other_details } = savedUser._doc;
+
+        return res.status(201).json({ status: "OK",message: 'User updated successfully', data: other_details })
+
+
+    } catch (error) {
+        return res.status(412).json({ status: "FAILED", message: error.message });
+    }
 }
 
 const deleteUser = async(req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).json({ status: "FAILED", message: "User has been deleted." });
+    } catch (error) {
+        return res.status(412).json({ status: "FAILED", message: error.message });
+    }
     
 }
 module.exports = { registerUser, loginUser, getUser, getAllUsers, updateUser, deleteUser };
