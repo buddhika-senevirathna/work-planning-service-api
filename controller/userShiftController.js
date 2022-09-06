@@ -116,11 +116,13 @@ const userShiftFromTo = async(req, res) => {
 /**
  * Return users for selected shift.
  */
-const usersInSelectedShift = (req, res) => {
+const usersInSelectedShift = async(req, res) => {
     try {
-        res.status(200).json({ status:"OK", message:"shift status updated sucessfully." });
-    } catch (error) {
+        const usersInShift = await userShiftsModel.find({ _id:new ObjectId(req.params.id) })
 
+        return res.status(200).json({ status:"OK", message:usersInShift });
+    } catch (error) {
+        res.status(412).json({ status:"FAILED", message: error.message });
     }
 }
 
