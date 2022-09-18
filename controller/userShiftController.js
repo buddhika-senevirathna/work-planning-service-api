@@ -59,7 +59,6 @@ const assignShiftToUser = async(req, res) => {
  */
 const getAllUsersShifts = async(req, res) => {
     try {
-        console.log("getAllUsersShifts");
         const usersShifts = await userShiftsModel.find()
         .populate({
             path:'assignedUsers._id', select:['firstName', 'lastName']
@@ -72,15 +71,47 @@ const getAllUsersShifts = async(req, res) => {
 }
 
 /**
- * Update shift status and given users status.
+ * Update shift status.
  */
-const updateShiftStatus = (req, res) => {
+const updateShiftStatus = async(req, res) => {
     try {
-        res.status(200).json({ status:"OK", message:"shift status updated sucessfully." });
+        const updatedShiftStatus = await userShiftsModel.findByIdAndUpdate(
+            { 
+                _id: new ObjectId(req.params.id) 
+            },
+            {
+                $set: {
+                    shiftStatus: req.body.status,
+                }
+            }
+        );
+        return res.status(200).json({ status:"OK", message: updatedShiftStatus });
     } catch (error) {
-
+        return res.status(412).json({ status:"FAILED", message: error.message });
     }
 }
+
+/**
+ * Update user status.
+ */
+ const updateShiftUserStatus = async(req, res) => {
+    try {
+        const updatedShiftStatus = await userShiftsModel.findByIdAndUpdate(
+            {
+                _id: new ObjectId(req.params.id)
+            },
+            {
+                $set: {
+                    shiftStatus: req.body.status,
+                }
+            }
+        );
+        return res.status(200).json({ status:"OK", message: updatedShiftStatus });
+    } catch (error) {
+        return res.status(412).json({ status:"FAILED", message: error.message });
+    }
+}
+
 
 /**
  * Return selected user's shift between given days.
@@ -127,7 +158,7 @@ const usersInSelectedShift = async(req, res) => {
 }
 
 /**
- * Remove users from shift.
+ * Remove user from shift.
  */
 const removeUserFromShift = async(req, res) => {
     try {
@@ -154,4 +185,14 @@ const removeUserFromShift = async(req, res) => {
     }
 }
 
-module.exports = { assignShiftToUser, getAllUsersShifts, updateShiftStatus, userShiftFromTo, usersInSelectedShift, removeUserFromShift, removeSelectedShift };
+module.exports = {
+    assignShiftToUser,
+    getAllUsersShifts,
+    updateShiftStatus,
+    userShiftFromTo,
+    usersInSelectedShift,
+    removeUserFromShift,
+    removeSelectedShift,
+    updateShiftStatus,
+    updateShiftUserStatus
+};
