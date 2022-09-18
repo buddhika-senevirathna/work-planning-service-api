@@ -129,11 +129,18 @@ const usersInSelectedShift = async(req, res) => {
 /**
  * Remove users from shift.
  */
-const removeUserFromShift = (req, res) => {
+const removeUserFromShift = async(req, res) => {
     try {
-        res.status(200).json({ status:"OK", message:"shift status updated sucessfully." });
+        const shiftId = req.params.id;
+        const userId = req.body.userId;
+       const removeStatus = await userShiftsModel.updateOne(
+            {_id:new ObjectId(shiftId)},
+            {'$pull':{ 'assignedUsers':{'_id': new ObjectId(userId) }}},
+            {new:true}
+        );
+       return res.status(200).json({ status:"OK", removeStatus });
     } catch (error) {
-
+        res.status(412).json({ status:"FAILED", message: error.message });
     }
 }
 
