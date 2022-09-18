@@ -74,12 +74,77 @@ const getAllUsersShifts = async(req, res) => {
 /**
  * Update shift status and given users status.
  */
+const updateShiftStatus = (req, res) => {
+    try {
+        res.status(200).json({ status:"OK", message:"shift status updated sucessfully." });
+    } catch (error) {
+
+    }
+}
 
 /**
- * Return selected users shift between given days.
+ * Return selected user's shift between given days.
  */
+const userShiftFromTo = async(req, res) => {
+   try {
+    const usersShifts = await userShiftsModel.aggregate([
+        {
+            "$unwind":"$assignedUsers"},
+        {
+            "$match":{
+                "assignedUsers._id": new ObjectId(req.params.id),
+                "shiftDate":{$gte: new Date(req.body.from), $lte: new Date(req.body.to)}
+            }
+        },
+        {
+            "$project":{
+                "shiftDate":1,
+                "shiftStatus":1,
+                "startTime":1,
+                "endTime":1,
+                "assignedUsers":1
+            }
+        }
+    ]);
+
+    res.status(200).json({ status:"OK", message: usersShifts });
+   } catch (error) {
+    res.status(412).json({ status:"FAILED", message: error.message });
+   }
+}
 
 /**
  * Return users for selected shift.
  */
-module.exports = { assignShiftToUser, getAllUsersShifts };
+const usersInSelectedShift = async(req, res) => {
+    try {
+        const usersInShift = await userShiftsModel.find({ _id:new ObjectId(req.params.id) })
+
+        return res.status(200).json({ status:"OK", message:usersInShift });
+    } catch (error) {
+        res.status(412).json({ status:"FAILED", message: error.message });
+    }
+}
+
+/**
+ * Remove users from shift.
+ */
+const removeUserFromShift = (req, res) => {
+    try {
+        res.status(200).json({ status:"OK", message:"shift status updated sucessfully." });
+    } catch (error) {
+
+    }
+}
+
+/**
+ * Delete Shift.
+ */
+ const removeSelectedShift = (req, res) => {
+    try {
+        res.status(200).json({ status:"OK", message:"shift removed sucessfully." });
+    } catch (error) {
+    }
+}
+
+module.exports = { assignShiftToUser, getAllUsersShifts, updateShiftStatus, userShiftFromTo, usersInSelectedShift, removeUserFromShift, removeSelectedShift };
