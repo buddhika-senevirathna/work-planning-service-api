@@ -182,6 +182,7 @@ const removeUserFromShift = async(req, res) => {
     try {
         res.status(200).json({ status:"OK", message:"shift removed sucessfully." });
     } catch (error) {
+        res.status(412).json({ status:"FAILED", message:error.message });
     }
 }
 
