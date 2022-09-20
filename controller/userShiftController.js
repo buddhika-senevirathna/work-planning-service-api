@@ -35,6 +35,7 @@ const assignShiftToUser = async(req, res) => {
                 'endTime':endTime,
                 'shiftId': req.body.shiftId,
                 'shiftName': req.body.shiftName,
+                'department': req.body.department,
                 'shiftStatus': 'pending'
             },
             {
@@ -178,9 +179,10 @@ const removeUserFromShift = async(req, res) => {
 /**
  * Delete Shift.
  */
- const removeSelectedShift = (req, res) => {
+ const removeSelectedShift = async(req, res) => {
     try {
-        res.status(200).json({ status:"OK", message:"shift removed sucessfully." });
+        await userShiftsModel.findByIdAndDelete(req.params.id);
+        res.status(200).json({ status: "OK", message: "Shift has been deleted." });
     } catch (error) {
         res.status(412).json({ status:"FAILED", message:error.message });
     }
@@ -195,5 +197,6 @@ module.exports = {
     removeUserFromShift,
     removeSelectedShift,
     updateShiftStatus,
-    updateShiftUserStatus
+    updateShiftUserStatus,
+    removeSelectedShift
 };
