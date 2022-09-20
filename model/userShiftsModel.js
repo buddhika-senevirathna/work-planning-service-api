@@ -23,6 +23,10 @@ const userShiftSchema = new mongoose.Schema({
                 type: String,
                 required: true,
             },
+            department:{
+                type: String,
+                required: true,
+            },
             duration:{
                 type: Number,
                 required: true

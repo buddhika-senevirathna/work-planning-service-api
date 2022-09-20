@@ -15,6 +15,6 @@ userRouter.put('/:id', updateUser);
 
 userRouter.get('/', isAuthenticatedAndAdmin, getAllUsers);
 
-userRouter.delete('/:id', deleteUser);
+userRouter.delete('/:id', isAuthenticatedAndAdmin,deleteUser);
 
 module.exports = userRouter;

@@ -10,7 +10,8 @@ const {
     usersInSelectedShift,
     removeUserFromShift,
     updateShiftStatus,
-    updateShiftUserStatus
+    updateShiftUserStatus,
+    removeSelectedShift
  } = require('../controller/userShiftController');
 
 // Allocating shift to the users only for Admins.
@@ -21,5 +22,6 @@ shiftRouter.get('/shiftusers/:id', isAuthenticatedAndAdmin, usersInSelectedShift
 shiftRouter.patch('/removeuser/:id', isAuthenticatedAndAdmin, removeUserFromShift);
 shiftRouter.patch('/shiftstatus/:id', isAuthenticated, updateShiftStatus);
 shiftRouter.patch('/userstatus/:id', isAuthenticated, updateShiftUserStatus);
+shiftRouter.delete('/:id', isAuthenticatedAndAdmin, removeSelectedShift);
 
 module.exports = shiftRouter;
